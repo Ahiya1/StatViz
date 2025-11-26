@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken'
 import { DashboardShell } from '@/components/admin/DashboardShell'
 import { ProjectsContainer } from '@/components/admin/ProjectsContainer'
 
+export const runtime = 'nodejs'
+
 async function verifyAdminToken(token: string): Promise<boolean> {
   try {
     // Verify JWT signature and expiration
