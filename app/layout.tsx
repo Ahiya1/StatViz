@@ -14,11 +14,12 @@ const rubik = Rubik({
 export const metadata: Metadata = {
   title: 'StatViz - פלטפורמת דוחות סטטיסטיים',
   description: 'פלטפורמה מאובטחת לצפייה בדוחות ניתוח סטטיסטיים',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1.0,
-    maximumScale: 5.0,
-  },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1.0,
+  maximumScale: 5.0,
 }
 
 export default function RootLayout({
