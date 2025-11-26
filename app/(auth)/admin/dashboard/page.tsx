@@ -6,6 +6,7 @@ import { DashboardShell } from '@/components/admin/DashboardShell'
 import { ProjectsContainer } from '@/components/admin/ProjectsContainer'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 async function verifyAdminToken(token: string): Promise<boolean> {
   try {
