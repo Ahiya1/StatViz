@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Rubik } from 'next/font/google'
 import './globals.css'
-import '@/lib/env' // Validate environment on startup
 import { Providers } from '@/components/Providers'
 import { Toaster } from 'sonner'
 
