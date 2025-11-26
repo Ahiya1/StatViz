@@ -34,6 +34,12 @@ async function verifyAdminToken(token: string): Promise<boolean> {
 }
 
 export default async function DashboardPage() {
+  // Skip auth during build phase (no request context)
+  if (!process.env.JWT_SECRET) {
+    // Build time - return placeholder
+    return null
+  }
+
   // Server-side auth check
   const token = cookies().get('admin_token')?.value
 
