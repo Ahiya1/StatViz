@@ -9,6 +9,9 @@ const nextConfig = {
   // Remove X-Powered-By header for security
   poweredByHeader: false,
 
+  // Skip static generation - all routes are dynamic (require auth)
+  output: 'standalone',
+
   // Server actions configuration
   experimental: {
     serverActions: {
