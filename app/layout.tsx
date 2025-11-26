@@ -4,10 +4,6 @@ import './globals.css'
 import { Providers } from '@/components/Providers'
 import { Toaster } from 'sonner'
 
-export const dynamic = 'force-dynamic'
-export const dynamicParams = true
-export const revalidate = 0
-
 const rubik = Rubik({
   subsets: ['hebrew', 'latin'],
   weight: ['300', '400', '500', '700'],
