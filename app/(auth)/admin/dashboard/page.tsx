@@ -1,50 +1,32 @@
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { prisma } from '@/lib/db/client'
-import jwt from 'jsonwebtoken'
+'use client'
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { DashboardShell } from '@/components/admin/DashboardShell'
 import { ProjectsContainer } from '@/components/admin/ProjectsContainer'
+import { useAuth } from '@/lib/hooks/useAuth'
+import { Loader2 } from 'lucide-react'
 
-export const runtime = 'nodejs'
-export const dynamic = 'force-dynamic'
+export default function DashboardPage() {
+  const router = useRouter()
+  const { isAuthenticated, isLoading } = useAuth()
 
-async function verifyAdminToken(token: string): Promise<boolean> {
-  try {
-    // Verify JWT signature and expiration
-    jwt.verify(token, process.env.JWT_SECRET!)
-
-    // Check database session
-    const session = await prisma.adminSession.findUnique({
-      where: { token }
-    })
-
-    if (!session) return false
-
-    // Check expiration
-    if (session.expiresAt < new Date()) {
-      // Expired - delete session
-      await prisma.adminSession.delete({ where: { token } })
-      return false
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push('/admin')
     }
+  }, [isAuthenticated, isLoading, router])
 
-    return true
-  } catch (_error) {
-    return false
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
   }
-}
 
-export default async function DashboardPage() {
-  // Server-side auth check
-  let token: string | undefined
-  try {
-    token = cookies().get('admin_token')?.value
-  } catch {
-    // Build time - cookies() not available
+  if (!isAuthenticated) {
     return null
-  }
-
-  if (!token || !(await verifyAdminToken(token))) {
-    redirect('/admin')
   }
 
   return (
