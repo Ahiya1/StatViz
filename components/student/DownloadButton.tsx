@@ -6,6 +6,7 @@
  * Mobile: Fixed bottom bar (thumb-reachable)
  * Desktop: Absolute top-right positioning
  * Touch target: 44px minimum height (Apple/Android guidelines)
+ * Gradient variant with shadow-glow effect (Iteration 2 enhancement)
  */
 
 'use client'
@@ -67,11 +68,13 @@ export function DownloadButton({ projectId, projectName }: DownloadButtonProps) 
     <Button
       onClick={handleDownload}
       disabled={isDownloading}
+      variant="gradient"
       size="lg"
       className="
         min-h-[44px]
-        fixed bottom-6 left-6 right-6 z-50 shadow-lg
+        fixed bottom-6 left-6 right-6 z-50 shadow-glow
         md:absolute md:bottom-auto md:top-6 md:left-auto md:right-6 md:w-auto
+        hover:shadow-xl transition-all duration-200
       "
     >
       {isDownloading ? (

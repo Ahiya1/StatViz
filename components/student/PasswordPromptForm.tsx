@@ -8,6 +8,7 @@
  * - Hebrew error messages
  * - Loading states
  * - Rate limiting feedback
+ * - Professional gradient branding (Iteration 2 enhancement)
  */
 
 'use client'
@@ -16,11 +17,12 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Logo } from '@/components/shared/Logo'
 
 const PasswordSchema = z.object({
   password: z.string()
@@ -73,28 +75,35 @@ export function PasswordPromptForm({ projectId, onSuccess }: PasswordPromptFormP
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
-          <h1 className="text-2xl font-bold text-center mb-2">
+        {/* Logo component for branding */}
+        <Logo size="md" className="mb-6 mx-auto" />
+
+        <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8">
+          <h1 className="text-2xl font-bold text-center mb-2 text-slate-900">
             גישה לפרויקט
           </h1>
-          <p className="text-sm text-muted-foreground text-center mb-6">
+          <p className="text-sm text-slate-600 text-center mb-6">
             הזן את הסיסמה שנשלחה אליך במייל
           </p>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" dir="rtl">
             <div>
-              <Label htmlFor="password">סיסמה</Label>
+              <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+                סיסמה
+              </Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   {...register('password')}
-                  className={`text-base ${errors.password ? 'border-destructive' : ''}`}
-                  autoComplete="off"
+                  className={`text-base pl-10 text-left transition-all ${errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                  autoComplete="current-password"
+                  autoFocus
                   disabled={isSubmitting}
                   dir="ltr"
+                  placeholder="הזן סיסמה"
                 />
                 <button
                   type="button"
@@ -108,7 +117,7 @@ export function PasswordPromptForm({ projectId, onSuccess }: PasswordPromptFormP
                 </button>
               </div>
               {errors.password && (
-                <p className="text-sm text-destructive mt-1">
+                <p className="text-sm text-destructive mt-1 text-right">
                   {errors.password.message}
                 </p>
               )}
@@ -116,14 +125,27 @@ export function PasswordPromptForm({ projectId, onSuccess }: PasswordPromptFormP
 
             <Button
               type="submit"
+              variant="gradient"
               size="lg"
               className="w-full min-h-[44px]"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'מאמת...' : 'כניסה'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  מאמת סיסמה...
+                </>
+              ) : (
+                'הצג פרויקט'
+              )}
             </Button>
           </form>
         </div>
+
+        {/* Footer with helpful text */}
+        <p className="text-center text-sm text-slate-600 mt-4">
+          הסיסמה נשלחה אליך במייל
+        </p>
       </div>
     </div>
   )
