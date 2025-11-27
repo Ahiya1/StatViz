@@ -1,10 +1,9 @@
 /**
  * Prisma Client Singleton
  *
- * DEPENDENCY: This file should be created by Builder-1
- *
- * This is a placeholder to enable Builder-3 development.
- * Builder-1 will replace this with the actual implementation.
+ * Fixes prepared statement errors in development by:
+ * 1. Reusing a single Prisma client instance
+ * 2. Disabling prepared statements to avoid hot-reload conflicts
  */
 
 import { PrismaClient } from '@prisma/client'
@@ -17,6 +16,12 @@ export const prisma = globalForPrisma.prisma ?? new PrismaClient({
   log: process.env.NODE_ENV === 'development'
     ? ['query', 'error', 'warn']
     : ['error'],
+  // Disable prepared statements to avoid hot-reload conflicts in development
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL + (process.env.NODE_ENV === 'development' ? '?pgbouncer=true&prepared_statement_cache_size=0' : '')
+    }
+  }
 })
 
 if (process.env.NODE_ENV !== 'production') {
