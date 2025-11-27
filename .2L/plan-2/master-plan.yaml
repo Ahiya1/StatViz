@@ -1,0 +1,214 @@
+plan_id: plan-2
+created_at: 2025-11-27T03:05:00Z
+status: PLANNED
+total_iterations: 2
+
+strategy: |
+  Two-iteration UI/UX redesign approach balancing risk mitigation with efficiency.
+
+  Master exploration revealed MEDIUM complexity with a critical finding: the landing
+  page is already professionally redesigned (plan-1 delivered modern gradients, hero
+  section, features showcase). This significantly reduces scope.
+
+  Primary work focuses on ADMIN and STUDENT sections, which still use minimal styling.
+
+  Strategy rationale:
+  - Iteration 1 establishes design system foundation and tackles highest-risk area (admin
+    dashboard with authentication flows) while allowing production validation before
+    touching student-facing pages
+  - Iteration 2 polishes student experience and completes comprehensive testing
+  - Design system (Feature 4) is foundational dependency for all other features
+  - Admin section (Feature 2) has highest surface area and medium-high risk
+  - Student section (Feature 3) is simpler but requires RTL/mobile perfection
+
+  Risk management:
+  - Separating admin and student flows allows validation checkpoints
+  - Performance budgets established: CSS <100KB, no new JS dependencies
+  - RTL and responsive testing critical in both iterations
+
+  Explorer consensus: 2 iterations optimal for risk/efficiency balance.
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 1
+    name: "Design System & Admin Dashboard Redesign"
+    vision: "Establish unified design system and modernize admin dashboard with professional styling, enhanced forms, and polished authentication flows"
+    scope: |
+      **Features Implemented:**
+      - Feature 4: Unified Design System (FOUNDATION - blocks all others)
+        - Update globals.css with enhanced CSS variables (blue/indigo palette)
+        - Define typography scale (heading hierarchy, body text)
+        - Create gradient utilities and shadow system
+        - Document spacing standards and reusable patterns
+
+      - Feature 5: Professional Navigation & Branding
+        - Create professional logo component (BarChart3 icon + gradient wordmark)
+        - Implement sticky navigation with backdrop blur
+        - Ensure consistent header across admin section
+        - Add professional favicon
+
+      - Feature 2: Enhanced Admin Dashboard UI (HIGHEST COMPLEXITY)
+        - Modernize admin login page (/app/(auth)/admin/page.tsx)
+          * Gradient branding header
+          * Professional form styling with validation feedback
+          * Loading states with spinners
+        - Redesign admin dashboard shell (/app/admin/dashboard/page.tsx)
+          * Improved header with gradient and user info
+          * Enhanced project cards/table with shadows and hover effects
+          * Better empty states with encouraging CTAs
+        - Polish project management components
+          * CreateProjectDialog with enhanced modal styling
+          * UpdatePasswordDialog with backdrop blur
+          * DeleteProjectDialog with professional warnings
+          * Form inputs with better styling (react-hook-form + shadcn/ui)
+          * Professional button styles with gradients
+
+      **Work Estimate:** 6-8 hours
+
+      **Risk Level:** MEDIUM-HIGH
+      - Authentication flows are critical (admin login must not break)
+      - Form validation UX must remain smooth
+      - RTL layout must work for Hebrew admin UI
+
+      **Success Criteria:**
+      - Design tokens established and documented in globals.css
+      - Admin login page looks professional with gradients and modern styling
+      - Admin dashboard has polished cards, tables, and CTAs
+      - All forms have enhanced styling with clear validation feedback
+      - Modals use backdrop blur and professional styling
+      - Zero functional regression (all admin workflows work identically)
+      - RTL layout works correctly throughout admin section
+      - Mobile-responsive admin UI (tablet/desktop focused, mobile acceptable)
+
+      **Critical Testing:**
+      - Admin login with correct/incorrect credentials
+      - Create, update, delete project workflows
+      - Form validation error states
+      - Modal interactions
+      - Responsive design on tablet/desktop
+      - RTL layout verification
+
+    status: PENDING
+    dependencies: []
+
+  - iteration_id: 2
+    global_iteration: 2
+    name: "Student Experience Polish & Comprehensive QA"
+    vision: "Polish student-facing pages with professional design, optimize mobile experience, and complete comprehensive cross-browser and RTL testing"
+    scope: |
+      **Features Implemented:**
+      - Feature 3: Polished Student Experience
+        - Redesign password prompt page (/app/[slug]/page.tsx)
+          * Welcoming design with professional branding
+          * Clear Hebrew instructions with proper RTL layout
+          * Enhanced password input with visual feedback
+          * Friendly error messages with retry UX
+          * Loading states with professional spinner
+        - Enhance project viewer (/components/student/StudentView.tsx)
+          * Professional header with project metadata
+          * Clean, focused layout for embedded report
+          * Enhanced typography for metadata display
+          * Professional download button with icon and hover effect
+          * Smooth transitions between authentication states
+        - Mobile optimization
+          * Touch-optimized controls (44px minimum targets)
+          * Mobile-first responsive layout
+          * Test on actual mobile devices (not just browser DevTools)
+
+      - Feature 1: Landing Page Verification (ALREADY DONE)
+        * Verify existing landing page meets all acceptance criteria
+        * Minor polish if needed (sticky nav, smooth scroll)
+        * Ensure consistent branding with admin/student sections
+
+      **Comprehensive QA Phase:**
+      - RTL layout testing
+        * Verify Hebrew text throughout student and admin sections
+        * Check mixed RTL/LTR content (emails, passwords, technical terms)
+        * Test gradient directions in RTL mode
+
+      - Responsive design testing
+        * Mobile (320px - 768px): Student experience priority
+        * Tablet (768px - 1024px): Admin dashboard optimization
+        * Desktop (1024px+): Full experience
+        * Test on real devices, not just browser DevTools
+
+      - Cross-browser testing
+        * Chrome 90+ (primary)
+        * Firefox 88+
+        * Safari 14+ (macOS/iOS)
+        * Edge 90+
+
+      - Performance validation
+        * Run Lighthouse on all pages (target: >90 performance score)
+        * Verify CSS bundle <100KB
+        * Check page load times <2s
+        * Test 60fps animations (hover effects, transitions)
+        * Compare metrics to baseline from Explorer 4
+
+      - Functional regression testing
+        * All admin workflows (create/update/delete projects)
+        * Student password authentication
+        * Project viewing and PDF downloads
+        * Form validation and error handling
+        * Modal interactions
+
+      **Work Estimate:** 4-6 hours
+
+      **Risk Level:** MEDIUM
+      - Student authentication flows are critical (password prompt must work)
+      - Mobile responsiveness requires thorough testing
+      - RTL layout complexity in student viewer
+      - Performance must not degrade
+
+      **Success Criteria:**
+      - Student password prompt page is welcoming and professional
+      - Student project viewer has polished metadata display
+      - Download button has professional styling with icon
+      - Landing page verified and polished (sticky nav, smooth scroll)
+      - Mobile experience is excellent on real devices
+      - RTL layout perfect throughout (Hebrew text properly aligned)
+      - All browsers render correctly (Chrome, Firefox, Safari, Edge)
+      - Lighthouse scores >90 for performance
+      - CSS bundle <100KB, no new JS dependencies
+      - Zero functional regression across all workflows
+      - All 5 features meet acceptance criteria from vision.md
+
+      **Critical Testing:**
+      - Student password authentication (correct/incorrect)
+      - Project viewing on mobile devices
+      - PDF download functionality
+      - RTL text rendering in student viewer
+      - Cross-browser rendering
+      - Performance metrics vs baseline
+
+    status: PENDING
+    dependencies:
+      - iteration_id: 1
+        reason: "Requires design system tokens and component patterns from Iteration 1"
+
+# Master exploration metadata
+master_exploration:
+  num_explorers: 4
+  complexity_level: COMPLEX
+  explorer_reports:
+    - master-explorer-1-report.md
+    - master-explorer-2-report.md
+    - master-explorer-3-report.md
+    - master-explorer-4-report.md
+
+  key_findings:
+    - "Landing page already professionally redesigned (reduces scope by ~30%)"
+    - "Zero new npm dependencies required (all tools already installed)"
+    - "Admin section is highest complexity (authentication + CRUD workflows)"
+    - "Student section is simpler but requires mobile/RTL perfection"
+    - "Design system must come first (foundational dependency)"
+
+  consensus_recommendation: "2 iterations for optimal risk/efficiency balance"
+
+# Performance baselines (from Explorer 4)
+performance_baselines:
+  css_bundle_size: "30KB"
+  total_static_assets: "1.3MB"
+  target_css_size: "<100KB"
+  target_page_load: "<2s"
+  target_animations: "60fps"
