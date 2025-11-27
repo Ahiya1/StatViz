@@ -1,32 +1,44 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardShell } from '@/components/admin/DashboardShell'
 import { ProjectsContainer } from '@/components/admin/ProjectsContainer'
-import { useAuth } from '@/lib/hooks/useAuth'
 import { Loader2 } from 'lucide-react'
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading } = useAuth()
+  const [isChecking, setIsChecking] = useState(true)
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/admin')
-    }
-  }, [isAuthenticated, isLoading, router])
+    // Check authentication on mount
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/admin/projects', {
+          credentials: 'include',
+        })
 
-  if (isLoading) {
+        if (!response.ok) {
+          // Not authenticated, redirect to login
+          router.push('/admin')
+        }
+      } catch {
+        // Error checking auth, redirect to login
+        router.push('/admin')
+      } finally {
+        setIsChecking(false)
+      }
+    }
+
+    checkAuth()
+  }, [router])
+
+  if (isChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
-  }
-
-  if (!isAuthenticated) {
-    return null
   }
 
   return (
