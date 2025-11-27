@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { copyToClipboard } from '@/lib/utils/clipboard'
+import { toast } from 'sonner'
 
 interface RegeneratePasswordModalProps {
   open: boolean
@@ -27,10 +27,15 @@ export function RegeneratePasswordModal({
 }: RegeneratePasswordModalProps) {
   const [copiedPassword, setCopiedPassword] = useState(false)
 
-  function handleCopyPassword() {
-    copyToClipboard(password)
-    setCopiedPassword(true)
-    setTimeout(() => setCopiedPassword(false), 2000)
+  async function handleCopyPassword() {
+    try {
+      await navigator.clipboard.writeText(password)
+      setCopiedPassword(true)
+      toast.success('הסיסמה הועתקה ללוח!')
+      setTimeout(() => setCopiedPassword(false), 2000)
+    } catch (error) {
+      toast.error('שגיאה בהעתקה ללוח')
+    }
   }
 
   return (
