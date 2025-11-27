@@ -159,7 +159,7 @@ export default function HomePage() {
                 const formData = new FormData(e.currentTarget)
                 const projectId = formData.get('projectId') as string
                 if (projectId.trim()) {
-                  window.location.href = `/${projectId.trim()}`
+                  window.location.href = `/preview/${projectId.trim()}`
                 }
               }}
               className="max-w-md mx-auto flex gap-3"
