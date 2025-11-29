@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { ExternalLink, Trash2, KeyRound } from 'lucide-react'
+import { ExternalLink, Trash2, KeyRound, Pencil } from 'lucide-react'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { CopyButton } from './CopyButton'
 import { DeleteConfirmModal } from './DeleteConfirmModal'
 import { RegeneratePasswordModal } from './RegeneratePasswordModal'
+import { EditProjectDialog } from './EditProjectDialog'
 import { useDeleteProject } from '@/lib/hooks/useDeleteProject'
 import { useRegeneratePassword } from '@/lib/hooks/useRegeneratePassword'
 import { formatHebrewDate, formatViewCount } from '@/lib/utils/dates'
@@ -20,6 +21,7 @@ interface Props {
 export function ProjectRow({ project }: Props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const [newPassword, setNewPassword] = useState<string>('')
   const deleteProject = useDeleteProject()
   const regeneratePassword = useRegeneratePassword()
@@ -78,6 +80,15 @@ export function ProjectRow({ project }: Props) {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => setShowEditModal(true)}
+              className="gap-2"
+            >
+              <Pencil className="h-4 w-4" />
+              ערוך
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleRegeneratePassword}
               disabled={regeneratePassword.isPending}
               className="gap-2"
@@ -111,6 +122,12 @@ export function ProjectRow({ project }: Props) {
         onOpenChange={setShowPasswordModal}
         password={newPassword}
         projectName={project.projectName}
+      />
+
+      <EditProjectDialog
+        project={project}
+        open={showEditModal}
+        onOpenChange={setShowEditModal}
       />
     </>
   )

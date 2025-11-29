@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
         projectName: true,
         studentName: true,
         studentEmail: true,
+        researchTopic: true,
         createdAt: true,
         viewCount: true,
         lastAccessed: true,

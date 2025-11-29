@@ -4,6 +4,7 @@ import { requireAdminAuth } from '@/lib/auth/middleware'
 import { prisma } from '@/lib/db/client'
 import { fileStorage } from '@/lib/storage'
 import { LocalFileStorage } from '@/lib/storage/local'
+import { validateFileSize, validateHtmlSelfContained } from '@/lib/upload/validator'
 
 /**
  * GET /api/admin/projects/[id] - Get project details
@@ -75,6 +76,253 @@ export async function GET(
         error: {
           code: 'INTERNAL_ERROR',
           message: 'Internal server error'
+        }
+      },
+      { status: 500 }
+    )
+  }
+}
+
+/**
+ * PUT /api/admin/projects/[id] - Update project metadata and/or files
+ *
+ * Updates project metadata (name, student info, research topic) and optionally replaces files
+ * Requires admin authentication
+ *
+ * Request (multipart/form-data):
+ * - project_name?: string
+ * - student_name?: string
+ * - student_email?: string
+ * - research_topic?: string
+ * - docx_file?: File (optional - replaces existing DOCX)
+ * - html_file?: File (optional - replaces existing HTML)
+ *
+ * Response:
+ * {
+ *   success: true,
+ *   data: {
+ *     project: { ...updated project data },
+ *     htmlWarnings?: string[]
+ *   }
+ * }
+ */
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    // Check authentication
+    const authError = await requireAdminAuth(req)
+    if (authError) return authError
+
+    const projectId = params.id
+
+    // Fetch project first to ensure it exists
+    const project = await prisma.project.findUnique({
+      where: { projectId }
+    })
+
+    if (!project || project.deletedAt) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'PROJECT_NOT_FOUND',
+            message: 'Project not found'
+          }
+        },
+        { status: 404 }
+      )
+    }
+
+    // Parse multipart form data
+    const formData = await req.formData()
+
+    const projectName = formData.get('project_name') as string | null
+    const studentName = formData.get('student_name') as string | null
+    const studentEmail = formData.get('student_email') as string | null
+    const researchTopic = formData.get('research_topic') as string | null
+    const docxFile = formData.get('docx_file') as File | null
+    const htmlFile = formData.get('html_file') as File | null
+
+    // Build update data - only include fields that were provided
+    const updateData: {
+      projectName?: string
+      studentName?: string
+      studentEmail?: string
+      researchTopic?: string
+      docxUrl?: string
+      htmlUrl?: string
+    } = {}
+
+    let htmlWarnings: string[] = []
+
+    if (projectName !== null && projectName !== '') {
+      if (projectName.trim().length === 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'VALIDATION_ERROR',
+              message: 'Project name must be a non-empty string'
+            }
+          },
+          { status: 400 }
+        )
+      }
+      updateData.projectName = projectName.trim()
+    }
+
+    if (studentName !== null && studentName !== '') {
+      if (studentName.trim().length === 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'VALIDATION_ERROR',
+              message: 'Student name must be a non-empty string'
+            }
+          },
+          { status: 400 }
+        )
+      }
+      updateData.studentName = studentName.trim()
+    }
+
+    if (studentEmail !== null && studentEmail !== '') {
+      if (!studentEmail.includes('@')) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'VALIDATION_ERROR',
+              message: 'Invalid email format'
+            }
+          },
+          { status: 400 }
+        )
+      }
+      updateData.studentEmail = studentEmail.trim()
+    }
+
+    if (researchTopic !== null && researchTopic !== '') {
+      if (researchTopic.trim().length === 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'VALIDATION_ERROR',
+              message: 'Research topic must be a non-empty string'
+            }
+          },
+          { status: 400 }
+        )
+      }
+      updateData.researchTopic = researchTopic.trim()
+    }
+
+    // Handle DOCX file upload
+    if (docxFile && docxFile.size > 0) {
+      const docxBuffer = Buffer.from(await docxFile.arrayBuffer())
+
+      // Validate file size
+      try {
+        validateFileSize(docxBuffer)
+      } catch {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'FILE_VALIDATION_ERROR',
+              message: 'DOCX file exceeds maximum size (50MB)'
+            }
+          },
+          { status: 400 }
+        )
+      }
+
+      // Delete old file and upload new one
+      try {
+        await fileStorage.delete(projectId, 'findings.docx')
+      } catch {
+        // Ignore - file may not exist
+      }
+
+      const docxUrl = await fileStorage.upload(projectId, 'findings.docx', docxBuffer)
+      updateData.docxUrl = docxUrl
+    }
+
+    // Handle HTML file upload
+    if (htmlFile && htmlFile.size > 0) {
+      const htmlBuffer = Buffer.from(await htmlFile.arrayBuffer())
+
+      // Validate file size
+      try {
+        validateFileSize(htmlBuffer)
+      } catch {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'FILE_VALIDATION_ERROR',
+              message: 'HTML file exceeds maximum size (50MB)'
+            }
+          },
+          { status: 400 }
+        )
+      }
+
+      // Validate HTML content
+      const htmlValidation = validateHtmlSelfContained(htmlBuffer.toString('utf-8'))
+      htmlWarnings = htmlValidation.warnings
+
+      // Delete old file and upload new one
+      try {
+        await fileStorage.delete(projectId, 'report.html')
+      } catch {
+        // Ignore - file may not exist
+      }
+
+      const htmlUrl = await fileStorage.upload(projectId, 'report.html', htmlBuffer)
+      updateData.htmlUrl = htmlUrl
+    }
+
+    // Check if there's anything to update
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'No valid fields provided for update'
+          }
+        },
+        { status: 400 }
+      )
+    }
+
+    // Update the project
+    const updatedProject = await prisma.project.update({
+      where: { projectId },
+      data: updateData
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        project: updatedProject,
+        ...(htmlWarnings.length > 0 && { htmlWarnings })
+      }
+    })
+
+  } catch (error) {
+    console.error(`PUT /api/admin/projects/${params.id} error:`, error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'Failed to update project'
         }
       },
       { status: 500 }

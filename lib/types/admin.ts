@@ -5,6 +5,7 @@ export interface Project {
   projectName: string
   studentName: string
   studentEmail: string
+  researchTopic?: string
   createdAt: Date
   viewCount: number
   lastAccessed: Date | null
