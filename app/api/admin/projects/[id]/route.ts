@@ -253,8 +253,17 @@ export async function PUT(
     }
 
     // Handle HTML file upload
+    console.log(`[PUT ${projectId}] HTML file check:`, {
+      hasFile: !!htmlFile,
+      fileName: htmlFile?.name,
+      fileSize: htmlFile?.size,
+      fileType: htmlFile?.type,
+    })
+
     if (htmlFile && htmlFile.size > 0) {
+      console.log(`[PUT ${projectId}] Processing HTML file upload...`)
       const htmlBuffer = Buffer.from(await htmlFile.arrayBuffer())
+      console.log(`[PUT ${projectId}] HTML buffer size:`, htmlBuffer.length)
 
       // Validate file size
       try {
@@ -278,12 +287,16 @@ export async function PUT(
 
       // Delete old file and upload new one
       try {
+        console.log(`[PUT ${projectId}] Deleting old HTML file...`)
         await fileStorage.delete(projectId, 'report.html')
-      } catch {
-        // Ignore - file may not exist
+        console.log(`[PUT ${projectId}] Old HTML file deleted`)
+      } catch (deleteErr) {
+        console.log(`[PUT ${projectId}] Delete failed (may not exist):`, deleteErr)
       }
 
+      console.log(`[PUT ${projectId}] Uploading new HTML file...`)
       const htmlUrl = await fileStorage.upload(projectId, 'report.html', htmlBuffer)
+      console.log(`[PUT ${projectId}] HTML uploaded successfully:`, htmlUrl)
       updateData.htmlUrl = htmlUrl
     }
 

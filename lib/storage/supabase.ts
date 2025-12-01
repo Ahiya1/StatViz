@@ -29,8 +29,9 @@ export class SupabaseFileStorage implements FileStorage {
 
   async upload(projectId: string, filename: string, buffer: Buffer): Promise<string> {
     const filePath = `${projectId}/${filename}`
+    console.log(`[Supabase] Uploading ${filePath}, size: ${buffer.length} bytes`)
 
-    const { error } = await this.supabase.storage
+    const { data, error } = await this.supabase.storage
       .from('projects')
       .upload(filePath, buffer, {
         contentType: filename.endsWith('.docx')
@@ -40,9 +41,11 @@ export class SupabaseFileStorage implements FileStorage {
       })
 
     if (error) {
+      console.error(`[Supabase] Upload failed for ${filePath}:`, error)
       throw new Error(`Supabase upload failed: ${error.message}`)
     }
 
+    console.log(`[Supabase] Upload successful for ${filePath}:`, data)
     return filePath
   }
 
