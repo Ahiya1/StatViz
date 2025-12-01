@@ -3,8 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 export function middleware(request: NextRequest) {
   const response = NextResponse.next()
 
-  // Tighten CSP for iframe content routes (student preview)
-  if (request.nextUrl.pathname.startsWith('/api/preview/')) {
+  // Tighten CSP for preview routes (student preview pages and API)
+  // These routes display HTML content that may contain base64-encoded images
+  const isPreviewRoute = request.nextUrl.pathname.startsWith('/api/preview/') ||
+                         request.nextUrl.pathname.startsWith('/preview/')
+
+  if (isPreviewRoute) {
     response.headers.set(
       'Content-Security-Policy',
       [
@@ -13,7 +17,7 @@ export function middleware(request: NextRequest) {
         // Note: unsafe-eval needed for Plotly to work properly
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.plot.ly https://cdn.jsdelivr.net",
         "style-src 'self' 'unsafe-inline' data:",  // Plotly uses data URLs for styles
-        "img-src 'self' data: blob:",  // Plotly may use blob URLs for images
+        "img-src 'self' data: blob:",  // Allow base64 images and blob URLs
         "connect-src 'self'",
         "frame-ancestors 'self'",  // Allow same-origin iframes (our project viewer)
       ].join('; ')
