@@ -73,13 +73,14 @@ export async function GET(
     const htmlBuffer = await fileStorage.download(projectId, 'report.html')
 
     // Return HTML with proper headers
-    // Use no-cache to ensure browser always revalidates with server
-    // This ensures updated content is shown immediately after edits
+    // Disable ALL caching (browser + Vercel CDN) to ensure updates show immediately
     return new NextResponse(htmlBuffer.toString('utf-8'), {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'CDN-Cache-Control': 'no-store',
+        'Vercel-CDN-Cache-Control': 'no-store',
       }
     })
 
