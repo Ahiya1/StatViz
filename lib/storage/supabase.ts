@@ -49,17 +49,41 @@ export class SupabaseFileStorage implements FileStorage {
   async download(projectId: string, filename: string): Promise<Buffer> {
     const filePath = `${projectId}/${filename}`
 
-    const { data, error } = await this.supabase.storage
+    // Get the public URL and fetch with cache-busting
+    const { data: urlData } = this.supabase.storage
       .from('projects')
-      .download(filePath)
+      .getPublicUrl(filePath)
 
-    if (error) {
-      throw new Error(`Supabase download failed: ${error.message}`)
+    // Add timestamp to bust CDN cache
+    const cacheBustedUrl = `${urlData.publicUrl}?t=${Date.now()}`
+
+    try {
+      const response = await fetch(cacheBustedUrl, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+
+      const arrayBuffer = await response.arrayBuffer()
+      return Buffer.from(arrayBuffer)
+    } catch (fetchError) {
+      // Fallback to Supabase SDK download if fetch fails
+      const { data, error } = await this.supabase.storage
+        .from('projects')
+        .download(filePath)
+
+      if (error) {
+        throw new Error(`Supabase download failed: ${error.message}`)
+      }
+
+      const arrayBuffer = await data.arrayBuffer()
+      return Buffer.from(arrayBuffer)
     }
-
-    // Convert Blob to Buffer
-    const arrayBuffer = await data.arrayBuffer()
-    return Buffer.from(arrayBuffer)
   }
 
   async delete(projectId: string, filename: string): Promise<void> {
