@@ -21,14 +21,23 @@ export default function HomePage() {
                 <p className="text-xs text-slate-600">פלטפורמת דוחות סטטיסטיים</p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={() => window.location.href = '/admin'}
-            >
-              <ArrowLeft className="h-4 w-4" />
-              כניסת מנהלים
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                className="text-slate-600 hover:text-blue-600"
+                onClick={() => window.location.href = '/demo'}
+              >
+                צפה בדמו
+              </Button>
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => window.location.href = '/admin'}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                כניסת מנהלים
+              </Button>
+            </div>
           </div>
         </div>
       </nav>
