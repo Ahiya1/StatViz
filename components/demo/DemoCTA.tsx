@@ -69,7 +69,7 @@ export function DemoCTA({
                   href="mailto:ahiya.butman@gmail.com"
                   className={cn(
                     buttonVariants({ size: 'lg', variant: 'outline' }),
-                    'text-lg h-14 px-8 border-2 border-white text-white hover:bg-white/10 min-w-[200px] flex items-center'
+                    'text-lg h-14 px-8 border-2 border-white/80 text-white bg-white/10 hover:bg-white/20 min-w-[200px] flex items-center'
                   )}
                 >
                   <svg

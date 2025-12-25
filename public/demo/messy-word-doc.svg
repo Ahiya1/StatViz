@@ -70,7 +70,4 @@
   <!-- Random highlight -->
   <rect x="95" y="205" width="200" height="18" fill="#fef08a" opacity="0.6"/>
 
-  <!-- Placeholder label -->
-  <rect x="250" y="555" width="300" height="35" rx="5" fill="#9ca3af" opacity="0.3"/>
-  <text x="400" y="578" font-family="Arial, sans-serif" font-size="14" fill="#6b7280" text-anchor="middle" font-weight="bold">PLACEHOLDER - Messy Word Doc</text>
 </svg>

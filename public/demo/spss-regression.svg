@@ -128,7 +128,4 @@
   <text x="40" y="465" font-family="Arial, sans-serif" font-size="9" fill="#6b7280">a. Dependent Variable: Score</text>
   <text x="40" y="480" font-family="Arial, sans-serif" font-size="9" fill="#6b7280">b. Predictors: (Constant), Education, Age, Income</text>
 
-  <!-- Placeholder label -->
-  <rect x="250" y="510" width="300" height="50" rx="5" fill="#9ca3af" opacity="0.3"/>
-  <text x="400" y="542" font-family="Arial, sans-serif" font-size="16" fill="#6b7280" text-anchor="middle" font-weight="bold">PLACEHOLDER - SPSS Regression</text>
 </svg>
