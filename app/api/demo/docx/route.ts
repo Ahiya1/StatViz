@@ -22,7 +22,8 @@ export async function GET() {
     const docxBuffer = await supabaseStorage.download(projectId, 'report.docx')
 
     // Return DOCX with proper headers for download
-    return new NextResponse(docxBuffer, {
+    // Convert Buffer to Uint8Array for NextResponse compatibility
+    return new NextResponse(new Uint8Array(docxBuffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
