@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f3f4f6"/>
+
+  <!-- Excel-like header bar -->
+  <rect width="800" height="35" fill="#217346"/>
+  <text x="20" y="23" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="white" font-weight="bold">Excel - Research_Data.xlsx</text>
+
+  <!-- Ribbon area -->
+  <rect y="35" width="800" height="25" fill="#f3f4f6"/>
+  <text x="20" y="52" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151">Home</text>
+  <text x="70" y="52" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151">Insert</text>
+  <text x="120" y="52" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151">Data</text>
+  <text x="165" y="52" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151">Formulas</text>
+
+  <!-- Formula bar -->
+  <rect y="60" width="800" height="25" fill="white" stroke="#d1d5db"/>
+  <text x="10" y="77" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151">A1</text>
+  <rect x="40" y="63" width="1" height="19" fill="#d1d5db"/>
+  <text x="55" y="77" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151">participant_id</text>
+
+  <!-- Spreadsheet grid -->
+  <rect x="0" y="85" width="800" height="515" fill="white"/>
+
+  <!-- Column headers -->
+  <rect x="0" y="85" width="40" height="25" fill="#f3f4f6" stroke="#d1d5db"/>
+  <rect x="40" y="85" width="100" height="25" fill="#f3f4f6" stroke="#d1d5db"/>
+  <rect x="140" y="85" width="80" height="25" fill="#f3f4f6" stroke="#d1d5db"/>
+  <rect x="220" y="85" width="80" height="25" fill="#f3f4f6" stroke="#d1d5db"/>
+  <rect x="300" y="85" width="100" height="25" fill="#f3f4f6" stroke="#d1d5db"/>
+  <rect x="400" y="85" width="80" height="25" fill="#f3f4f6" stroke="#d1d5db"/>
+  <rect x="480" y="85" width="100" height="25" fill="#f3f4f6" stroke="#d1d5db"/>
+  <rect x="580" y="85" width="100" height="25" fill="#f3f4f6" stroke="#d1d5db"/>
+  <rect x="680" y="85" width="120" height="25" fill="#f3f4f6" stroke="#d1d5db"/>
+
+  <text x="20" y="102" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle"></text>
+  <text x="90" y="102" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">A</text>
+  <text x="180" y="102" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">B</text>
+  <text x="260" y="102" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">C</text>
+  <text x="350" y="102" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">D</text>
+  <text x="440" y="102" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">E</text>
+  <text x="530" y="102" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">F</text>
+  <text x="630" y="102" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">G</text>
+  <text x="740" y="102" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">H</text>
+
+  <!-- Row 1 (headers) -->
+  <rect x="0" y="110" width="40" height="22" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="20" y="125" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" text-anchor="middle">1</text>
+  <rect x="40" y="110" width="100" height="22" fill="#e0f2fe" stroke="#d1d5db"/>
+  <rect x="140" y="110" width="80" height="22" fill="#e0f2fe" stroke="#d1d5db"/>
+  <rect x="220" y="110" width="80" height="22" fill="#e0f2fe" stroke="#d1d5db"/>
+  <rect x="300" y="110" width="100" height="22" fill="#e0f2fe" stroke="#d1d5db"/>
+  <rect x="400" y="110" width="80" height="22" fill="#e0f2fe" stroke="#d1d5db"/>
+  <rect x="480" y="110" width="100" height="22" fill="#e0f2fe" stroke="#d1d5db"/>
+  <rect x="580" y="110" width="100" height="22" fill="#e0f2fe" stroke="#d1d5db"/>
+  <rect x="680" y="110" width="120" height="22" fill="#e0f2fe" stroke="#d1d5db"/>
+
+  <text x="50" y="125" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" font-weight="bold">participant_id</text>
+  <text x="150" y="125" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" font-weight="bold">age</text>
+  <text x="230" y="125" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" font-weight="bold">gender</text>
+  <text x="310" y="125" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" font-weight="bold">education</text>
+  <text x="410" y="125" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" font-weight="bold">income</text>
+  <text x="490" y="125" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" font-weight="bold">pre_score</text>
+  <text x="590" y="125" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" font-weight="bold">post_score</text>
+  <text x="690" y="125" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" font-weight="bold">condition</text>
+
+  <!-- Data rows -->
+  <!-- Row 2 -->
+  <rect x="0" y="132" width="40" height="22" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="20" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" text-anchor="middle">2</text>
+  <rect x="40" y="132" width="100" height="22" fill="white" stroke="#e5e7eb"/>
+  <rect x="140" y="132" width="80" height="22" fill="white" stroke="#e5e7eb"/>
+  <rect x="220" y="132" width="80" height="22" fill="white" stroke="#e5e7eb"/>
+  <rect x="300" y="132" width="100" height="22" fill="white" stroke="#e5e7eb"/>
+  <rect x="400" y="132" width="80" height="22" fill="white" stroke="#e5e7eb"/>
+  <rect x="480" y="132" width="100" height="22" fill="white" stroke="#e5e7eb"/>
+  <rect x="580" y="132" width="100" height="22" fill="white" stroke="#e5e7eb"/>
+  <rect x="680" y="132" width="120" height="22" fill="white" stroke="#e5e7eb"/>
+  <text x="50" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">P001</text>
+  <text x="150" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">28</text>
+  <text x="230" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Female</text>
+  <text x="310" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Bachelor</text>
+  <text x="410" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">45000</text>
+  <text x="490" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">68</text>
+  <text x="590" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">74</text>
+  <text x="690" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Treatment</text>
+
+  <!-- Rows 3-12 (similar pattern) -->
+  <!-- Row 3 -->
+  <rect x="0" y="154" width="40" height="22" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="20" y="169" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" text-anchor="middle">3</text>
+  <rect x="40" y="154" width="760" height="22" fill="#fafafa" stroke="#e5e7eb"/>
+  <text x="50" y="169" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">P002</text>
+  <text x="150" y="169" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">34</text>
+  <text x="230" y="169" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Male</text>
+  <text x="310" y="169" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Master</text>
+  <text x="410" y="169" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">62000</text>
+  <text x="490" y="169" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">72</text>
+  <text x="590" y="169" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">85</text>
+  <text x="690" y="169" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Treatment</text>
+
+  <!-- Row 4 -->
+  <rect x="0" y="176" width="40" height="22" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="20" y="191" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" text-anchor="middle">4</text>
+  <rect x="40" y="176" width="760" height="22" fill="white" stroke="#e5e7eb"/>
+  <text x="50" y="191" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">P003</text>
+  <text x="150" y="191" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">41</text>
+  <text x="230" y="191" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Female</text>
+  <text x="310" y="191" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">PhD</text>
+  <text x="410" y="191" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">78000</text>
+  <text x="490" y="191" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">65</text>
+  <text x="590" y="191" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">71</text>
+  <text x="690" y="191" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Control</text>
+
+  <!-- Row 5 -->
+  <rect x="0" y="198" width="40" height="22" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="20" y="213" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" text-anchor="middle">5</text>
+  <rect x="40" y="198" width="760" height="22" fill="#fafafa" stroke="#e5e7eb"/>
+  <text x="50" y="213" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">P004</text>
+  <text x="150" y="213" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">25</text>
+  <text x="230" y="213" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Male</text>
+  <text x="310" y="213" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Bachelor</text>
+  <text x="410" y="213" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">38000</text>
+  <text x="490" y="213" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">58</text>
+  <text x="590" y="213" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">62</text>
+  <text x="690" y="213" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Control</text>
+
+  <!-- Row 6 -->
+  <rect x="0" y="220" width="40" height="22" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="20" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" text-anchor="middle">6</text>
+  <rect x="40" y="220" width="760" height="22" fill="white" stroke="#e5e7eb"/>
+  <text x="50" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">P005</text>
+  <text x="150" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">52</text>
+  <text x="230" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Female</text>
+  <text x="310" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Master</text>
+  <text x="410" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">55000</text>
+  <text x="490" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">81</text>
+  <text x="590" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">89</text>
+  <text x="690" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Treatment</text>
+
+  <!-- More rows indicator -->
+  <rect x="0" y="242" width="40" height="22" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="20" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" text-anchor="middle">7</text>
+  <rect x="40" y="242" width="760" height="22" fill="#fafafa" stroke="#e5e7eb"/>
+  <text x="50" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">P006</text>
+  <text x="150" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">29</text>
+  <text x="230" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Male</text>
+  <text x="310" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Bachelor</text>
+  <text x="410" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">42000</text>
+  <text x="490" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">69</text>
+  <text x="590" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">73</text>
+  <text x="690" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">Control</text>
+
+  <!-- Row 8 -->
+  <rect x="0" y="264" width="40" height="22" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="20" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" text-anchor="middle">8</text>
+  <rect x="40" y="264" width="760" height="22" fill="white" stroke="#e5e7eb"/>
+  <text x="50" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151">P007</text>
+  <text x="150" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#6b7280">...</text>
+  <text x="230" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#6b7280">...</text>
+  <text x="310" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#6b7280">...</text>
+  <text x="410" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#6b7280">...</text>
+  <text x="490" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#6b7280">...</text>
+  <text x="590" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#6b7280">...</text>
+  <text x="690" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#6b7280">...</text>
+
+  <!-- Sheet tabs at bottom -->
+  <rect y="550" width="800" height="50" fill="#f3f4f6"/>
+  <rect x="5" y="555" width="80" height="25" fill="white" stroke="#d1d5db" rx="2"/>
+  <text x="45" y="572" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#374151" text-anchor="middle">Data</text>
+  <rect x="90" y="555" width="80" height="25" fill="#f3f4f6" stroke="#d1d5db" rx="2"/>
+  <text x="130" y="572" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">Codebook</text>
+
+  <!-- Status bar -->
+  <text x="650" y="572" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#6b7280">150 rows x 8 columns</text>
+
+  <!-- Clean styling indicator -->
+  <rect x="250" y="380" width="300" height="50" rx="5" fill="#22c55e" opacity="0.15"/>
+  <text x="400" y="412" font-family="Arial, sans-serif" font-size="14" fill="#22c55e" text-anchor="middle" font-weight="bold">Clean Input Data Preview</text>
+</svg>

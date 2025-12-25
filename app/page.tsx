@@ -56,9 +56,11 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="text-lg h-14 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all"
+              variant="gradient"
+              className="text-lg h-14 px-8"
+              onClick={() => window.location.href = '/demo'}
             >
-              התחל לצפות בדוחות
+              צפה בדוגמה
             </Button>
             <Button
               size="lg"

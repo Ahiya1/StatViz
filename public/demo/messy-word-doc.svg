@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <!-- Background - gray paper -->
+  <rect width="800" height="600" fill="#e5e7eb"/>
+
+  <!-- Word-like document area with shadow -->
+  <rect x="80" y="30" width="640" height="540" fill="white" filter="url(#shadow)"/>
+
+  <!-- Shadow filter -->
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Messy header - misaligned -->
+  <text x="100" y="65" font-family="Times New Roman, serif" font-size="18" fill="#374151" font-weight="bold">Results Section - Draft v3 FINAL (2)</text>
+  <text x="100" y="85" font-family="Arial, sans-serif" font-size="11" fill="#dc2626">NEEDS FORMATTING!!!</text>
+
+  <!-- Poorly pasted table 1 - crooked -->
+  <g transform="rotate(-0.5, 300, 140)">
+    <rect x="100" y="105" width="280" height="90" fill="#f9fafb" stroke="#9ca3af" stroke-width="1"/>
+    <text x="110" y="125" font-family="Courier New, monospace" font-size="10" fill="#374151">Variable   M      SD     N</text>
+    <text x="110" y="145" font-family="Courier New, monospace" font-size="10" fill="#374151">Age        34.2   8.45   150</text>
+    <text x="110" y="165" font-family="Courier New, monospace" font-size="10" fill="#374151">Income     52340  12430  150</text>
+    <text x="110" y="185" font-family="Courier New, monospace" font-size="10" fill="#374151">Score      72.8   14.2   150</text>
+  </g>
+
+  <!-- Random comment bubble -->
+  <rect x="420" y="100" width="250" height="40" rx="3" fill="#fff3cd" stroke="#ffc107"/>
+  <text x="430" y="118" font-family="Arial, sans-serif" font-size="10" fill="#856404">Comment: Where did this data come</text>
+  <text x="430" y="132" font-family="Arial, sans-serif" font-size="10" fill="#856404">from? Check with supervisor</text>
+
+  <!-- Messy text paragraph -->
+  <text x="100" y="220" font-family="Times New Roman, serif" font-size="12" fill="#374151">A correlation analysis was conducted to examine the relationship between</text>
+  <text x="100" y="236" font-family="Times New Roman, serif" font-size="12" fill="#374151">variables. The results indicated that age was significantly correlated with</text>
+  <text x="100" y="252" font-family="Times New Roman, serif" font-size="12" fill="#374151">income (r = .423, p &lt; .001). See table below for full results.</text>
+
+  <!-- Another poorly pasted table - different font -->
+  <g transform="translate(0, 10)">
+    <rect x="100" y="270" width="550" height="120" fill="white" stroke="#6b7280" stroke-width="2"/>
+
+    <!-- Headers in wrong font -->
+    <text x="115" y="295" font-family="Comic Sans MS, cursive" font-size="11" fill="#374151" font-weight="bold">Correlations</text>
+
+    <!-- Misaligned columns -->
+    <text x="115" y="320" font-family="Courier, monospace" font-size="9" fill="#374151">         Age      Income    Education</text>
+    <text x="115" y="340" font-family="Arial, sans-serif" font-size="10" fill="#374151">Age        1        .423**      .287**</text>
+    <text x="115" y="358" font-family="Courier New, monospace" font-size="9" fill="#374151">Income   .423**      1         .612**</text>
+    <text x="115" y="375" font-family="Times, serif" font-size="10" fill="#374151">Education  .287**    .612**       1</text>
+  </g>
+
+  <!-- Strikethrough text -->
+  <text x="100" y="420" font-family="Times New Roman, serif" font-size="12" fill="#9ca3af" text-decoration="line-through">The regression analysis showed that the model was not significant.</text>
+
+  <!-- Replacement text in red -->
+  <text x="100" y="438" font-family="Times New Roman, serif" font-size="12" fill="#dc2626">The regression analysis revealed a significant model (F(3,146) = 54.24, p &lt; .001)</text>
+
+  <!-- Track changes style insertion -->
+  <text x="100" y="458" font-family="Times New Roman, serif" font-size="12" fill="#2563eb" text-decoration="underline">accounting for 52.4% of the variance in the dependent variable.</text>
+
+  <!-- Footer mess -->
+  <text x="100" y="495" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">** p &lt; .01  (why is this here twice???)</text>
+  <text x="100" y="510" font-family="Arial, sans-serif" font-size="9" fill="#dc2626">TODO: format all tables in APA style</text>
+  <text x="100" y="525" font-family="Arial, sans-serif" font-size="9" fill="#dc2626">TODO: add figure captions</text>
+  <text x="100" y="540" font-family="Arial, sans-serif" font-size="9" fill="#dc2626">TODO: check decimal places consistency</text>
+
+  <!-- Page number misaligned -->
+  <text x="680" y="555" font-family="Times New Roman, serif" font-size="10" fill="#6b7280">Page 3 of 12</text>
+
+  <!-- Random highlight -->
+  <rect x="95" y="205" width="200" height="18" fill="#fef08a" opacity="0.6"/>
+
+  <!-- Placeholder label -->
+  <rect x="250" y="555" width="300" height="35" rx="5" fill="#9ca3af" opacity="0.3"/>
+  <text x="400" y="578" font-family="Arial, sans-serif" font-size="14" fill="#6b7280" text-anchor="middle" font-weight="bold">PLACEHOLDER - Messy Word Doc</text>
+</svg>

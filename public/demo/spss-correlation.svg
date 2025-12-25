@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <!-- Background - clinical gray -->
+  <rect width="800" height="600" fill="#f3f4f6"/>
+
+  <!-- SPSS-style header bar -->
+  <rect width="800" height="40" fill="#6b7280"/>
+  <text x="20" y="26" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">IBM SPSS Statistics Viewer</text>
+  <text x="780" y="26" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="end">Output1 [Document1]</text>
+
+  <!-- Content area with table -->
+  <rect x="20" y="60" width="760" height="520" fill="white" stroke="#d1d5db" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="40" y="90" font-family="Arial, sans-serif" font-size="14" fill="#374151" font-weight="bold">Correlations</text>
+
+  <!-- Table header row -->
+  <rect x="40" y="110" width="720" height="30" fill="#e5e7eb"/>
+  <line x1="40" y1="110" x2="760" y2="110" stroke="#9ca3af" stroke-width="1"/>
+  <line x1="40" y1="140" x2="760" y2="140" stroke="#9ca3af" stroke-width="1"/>
+
+  <!-- Column headers -->
+  <text x="150" y="130" font-family="Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle"></text>
+  <text x="280" y="130" font-family="Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Age</text>
+  <text x="400" y="130" font-family="Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Income</text>
+  <text x="520" y="130" font-family="Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Education</text>
+  <text x="640" y="130" font-family="Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Score</text>
+
+  <!-- Row 1: Age -->
+  <rect x="40" y="140" width="720" height="80" fill="white"/>
+  <text x="60" y="160" font-family="Arial, sans-serif" font-size="11" fill="#374151" font-weight="bold">Age</text>
+  <text x="80" y="180" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Pearson Correlation</text>
+  <text x="80" y="195" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Sig. (2-tailed)</text>
+  <text x="80" y="210" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">N</text>
+
+  <text x="280" y="180" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">1</text>
+  <text x="280" y="210" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <text x="400" y="180" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.423**</text>
+  <text x="400" y="195" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.000</text>
+  <text x="400" y="210" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <text x="520" y="180" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.287**</text>
+  <text x="520" y="195" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.000</text>
+  <text x="520" y="210" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <text x="640" y="180" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">-.156</text>
+  <text x="640" y="195" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.057</text>
+  <text x="640" y="210" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <!-- Horizontal line -->
+  <line x1="40" y1="220" x2="760" y2="220" stroke="#d1d5db" stroke-width="1"/>
+
+  <!-- Row 2: Income -->
+  <rect x="40" y="220" width="720" height="80" fill="#fafafa"/>
+  <text x="60" y="240" font-family="Arial, sans-serif" font-size="11" fill="#374151" font-weight="bold">Income</text>
+  <text x="80" y="260" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Pearson Correlation</text>
+  <text x="80" y="275" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Sig. (2-tailed)</text>
+  <text x="80" y="290" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">N</text>
+
+  <text x="280" y="260" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.423**</text>
+  <text x="280" y="275" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.000</text>
+  <text x="280" y="290" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <text x="400" y="260" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">1</text>
+  <text x="400" y="290" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <text x="520" y="260" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.612**</text>
+  <text x="520" y="275" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.000</text>
+  <text x="520" y="290" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <text x="640" y="260" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.089</text>
+  <text x="640" y="275" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.278</text>
+  <text x="640" y="290" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <!-- Horizontal line -->
+  <line x1="40" y1="300" x2="760" y2="300" stroke="#d1d5db" stroke-width="1"/>
+
+  <!-- Row 3: Education -->
+  <rect x="40" y="300" width="720" height="80" fill="white"/>
+  <text x="60" y="320" font-family="Arial, sans-serif" font-size="11" fill="#374151" font-weight="bold">Education</text>
+  <text x="80" y="340" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Pearson Correlation</text>
+  <text x="80" y="355" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Sig. (2-tailed)</text>
+  <text x="80" y="370" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">N</text>
+
+  <text x="280" y="340" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.287**</text>
+  <text x="280" y="355" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.000</text>
+  <text x="280" y="370" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <text x="400" y="340" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.612**</text>
+  <text x="400" y="355" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.000</text>
+  <text x="400" y="370" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <text x="520" y="340" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">1</text>
+  <text x="520" y="370" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <text x="640" y="340" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.201*</text>
+  <text x="640" y="355" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">.014</text>
+  <text x="640" y="370" font-family="Courier, monospace" font-size="11" fill="#374151" text-anchor="middle">150</text>
+
+  <!-- Horizontal line -->
+  <line x1="40" y1="380" x2="760" y2="380" stroke="#d1d5db" stroke-width="1"/>
+
+  <!-- Vertical lines for table -->
+  <line x1="200" y1="110" x2="200" y2="380" stroke="#d1d5db" stroke-width="1"/>
+  <line x1="340" y1="110" x2="340" y2="380" stroke="#d1d5db" stroke-width="1"/>
+  <line x1="460" y1="110" x2="460" y2="380" stroke="#d1d5db" stroke-width="1"/>
+  <line x1="580" y1="110" x2="580" y2="380" stroke="#d1d5db" stroke-width="1"/>
+
+  <!-- Footer note -->
+  <text x="40" y="410" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">**. Correlation is significant at the 0.01 level (2-tailed).</text>
+  <text x="40" y="425" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">*. Correlation is significant at the 0.05 level (2-tailed).</text>
+
+  <!-- Outer border -->
+  <rect x="40" y="110" width="720" height="270" fill="none" stroke="#9ca3af" stroke-width="1"/>
+
+  <!-- Placeholder label -->
+  <rect x="250" y="480" width="300" height="50" rx="5" fill="#9ca3af" opacity="0.3"/>
+  <text x="400" y="512" font-family="Arial, sans-serif" font-size="16" fill="#6b7280" text-anchor="middle" font-weight="bold">PLACEHOLDER - SPSS Correlation</text>
+</svg>

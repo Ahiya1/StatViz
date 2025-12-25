@@ -3,10 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 export function middleware(request: NextRequest) {
   const response = NextResponse.next()
 
-  // Tighten CSP for preview routes (student preview pages and API)
+  // Tighten CSP for preview and demo routes (student preview pages and API)
   // These routes display HTML content that may contain base64-encoded images
   const isPreviewRoute = request.nextUrl.pathname.startsWith('/api/preview/') ||
-                         request.nextUrl.pathname.startsWith('/preview/')
+                         request.nextUrl.pathname.startsWith('/preview/') ||
+                         request.nextUrl.pathname.startsWith('/api/demo/') ||
+                         request.nextUrl.pathname.startsWith('/demo')
 
   if (isPreviewRoute) {
     response.headers.set(
