@@ -8,7 +8,7 @@
 
 import { BarChart3, ArrowLeft, FileSpreadsheet, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { PainSection, BlackBoxAnimation, SolutionShowcase, DemoCTA } from '@/components/demo'
+import { PainSection, BlackBoxAnimation, SolutionShowcase, DocxShowcase, DemoCTA } from '@/components/demo'
 
 export default function DemoPage() {
   return (
@@ -178,6 +178,9 @@ export default function DemoPage() {
 
       {/* Solution Showcase */}
       <SolutionShowcase />
+
+      {/* DOCX Showcase */}
+      <DocxShowcase />
 
       {/* CTA Section */}
       <DemoCTA />
