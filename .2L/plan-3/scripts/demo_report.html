@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דוח ניתוח סטטיסטי - StatViz</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Rubik', sans-serif;
+            line-height: 1.7;
+            color: #1e293b;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px -10px rgba(37, 99, 235, 0.4);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .header .meta {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .header .meta-item {
+            background: rgba(255,255,255,0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #1e40af;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section h2::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 1.5rem;
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            border-radius: 3px;
+        }
+
+        .hypothesis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hypothesis-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            border-right: 4px solid #2563eb;
+        }
+
+        .hypothesis-card.supported {
+            border-right-color: #10b981;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+
+        .hypothesis-card h3 {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .hypothesis-card p {
+            font-size: 1rem;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+        }
+
+        .hypothesis-card .result {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .hypothesis-card .result.supported {
+            color: #059669;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.875rem 1rem;
+            text-align: right;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            font-weight: 600;
+            color: #475569;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .significant {
+            background: #dcfce7 !important;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .interpretation {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 1.25rem 1.5rem;
+            border-radius: 0.75rem;
+            border-right: 4px solid #2563eb;
+            margin-top: 1.5rem;
+        }
+
+        .interpretation h3 {
+            color: #1e40af;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .interpretation p, .interpretation ul {
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .interpretation ul {
+            padding-right: 1.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .interpretation li {
+            margin-bottom: 0.25rem;
+        }
+
+        .chart-container {
+            background: #fafafa;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .reliability-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .reliability-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            text-align: center;
+        }
+
+        .reliability-card .alpha {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .reliability-card .label {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+
+        .reliability-card .status {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            display: inline-block;
+        }
+
+        .reliability-card .status.excellent {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .reliability-card .status.good {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            text-align: center;
+        }
+
+        .summary-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e40af;
+        }
+
+        .summary-card .label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 2rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .reliability-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>הקשר בין שימוש ברשתות חברתיות לבין דימוי גוף ודיכאון בקרב מתבגרים</h1>
+            <p>דוח ניתוח סטטיסטי מקיף</p>
+            <div class="meta">
+                <div class="meta-item">📊 N = 180</div>
+                <div class="meta-item">📅 גילאים 14-18</div>
+                <div class="meta-item">🎓 3 סוגי בתי ספר</div>
+            </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <h2>סיכום מנהלים</h2>
+            <div class="hypothesis-grid">
+                <div class="hypothesis-card supported">
+                    <h3>השערה 1</h3>
+                    <p>קשר שלילי בין שימוש ברשתות לדימוי גוף</p>
+                    <div class="result supported">✓ נתמכה | r = -0.32</div>
+                </div>
+                <div class="hypothesis-card supported">
+                    <h3>השערה 2</h3>
+                    <p>קשר חיובי בין שימוש ברשתות לדיכאון</p>
+                    <div class="result supported">✓ נתמכה | r = 0.34</div>
+                </div>
+                <div class="hypothesis-card supported">
+                    <h3>השערה 3</h3>
+                    <p>בנות ידווחו על דימוי גוף נמוך יותר</p>
+                    <div class="result supported">✓ נתמכה | d = 0.49</div>
+                </div>
+                <div class="hypothesis-card supported">
+                    <h3>השערה 4</h3>
+                    <p>דימוי גוף מתווך בין רשתות לדיכאון</p>
+                    <div class="result supported">✓ נתמכה | תיווך חלקי</div>
+                </div>
+                <div class="hypothesis-card supported">
+                    <h3>השערה 5</h3>
+                    <p>הבדלים בשימוש ברשתות לפי מגזר</p>
+                    <div class="result supported">✓ נתמכה | η² = 0.16</div>
+                </div>
+            </div>
+
+            <div class="interpretation">
+                <h3>מסקנה מרכזית:</h3>
+                <p>כל חמש ההשערות נתמכו באופן מלא. נמצא קשר מובהק בין שימוש ברשתות חברתיות לבין דימוי גוף שלילי ורמות דיכאון גבוהות יותר, עם הבדלים מובהקים בין מגדרים ומגזרים.</p>
+            </div>
+        </div>
+
+        <!-- Demographics -->
+        <div class="section">
+            <h2>נתונים דמוגרפיים</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="value">180</div>
+                    <div class="label">נבדקים</div>
+                </div>
+                <div class="summary-card">
+                    <div class="value">89</div>
+                    <div class="label">בנים</div>
+                </div>
+                <div class="summary-card">
+                    <div class="value">91</div>
+                    <div class="label">בנות</div>
+                </div>
+                <div class="summary-card">
+                    <div class="value">15.9</div>
+                    <div class="label">גיל ממוצע</div>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>סוג בית ספר</th>
+                        <th>מספר נבדקים</th>
+                        <th>אחוז</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ממלכתי</td>
+                        <td>90</td>
+                        <td>50.0%</td>
+                    </tr>
+                    <tr>
+                        <td>ממ"ד</td>
+                        <td>50</td>
+                        <td>27.8%</td>
+                    </tr>
+                    <tr>
+                        <td>חרדי</td>
+                        <td>40</td>
+                        <td>22.2%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Reliability -->
+        <div class="section">
+            <h2>מהימנות כלי המחקר</h2>
+            <div class="reliability-grid">
+                <div class="reliability-card">
+                    <div class="alpha">α = 0.91</div>
+                    <div class="label">שאלון שימוש ברשתות חברתיות</div>
+                    <div class="status excellent">
+                        מצוין
+                    </div>
+                </div>
+                <div class="reliability-card">
+                    <div class="alpha">α = 0.94</div>
+                    <div class="label">שאלון דימוי גוף</div>
+                    <div class="status excellent">
+                        מצוין
+                    </div>
+                </div>
+                <div class="reliability-card">
+                    <div class="alpha">α = 0.80</div>
+                    <div class="label">שאלון דיכאון</div>
+                    <div class="status excellent">
+                        מצוין
+                    </div>
+                </div>
+            </div>
+
+            <div class="interpretation">
+                <h3>פרשנות:</h3>
+                <p>כל שלושת כלי המחקר הראו מהימנות פנימית גבוהה (α > 0.70), מה שמעיד על עקביות פנימית טובה של הפריטים בכל שאלון.</p>
+            </div>
+        </div>
+
+        <!-- Descriptive Statistics -->
+        <div class="section">
+            <h2>סטטיסטיקה תיאורית</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>משתנה</th>
+                        <th>N</th>
+                        <th>ממוצע</th>
+                        <th>סטיית תקן</th>
+                        <th>מינימום</th>
+                        <th>מקסימום</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>שימוש ברשתות חברתיות</td>
+                        <td>180</td>
+                        <td class="stat-value">3.23</td>
+                        <td>0.88</td>
+                        <td>1.60</td>
+                        <td>4.70</td>
+                    </tr>
+                    <tr>
+                        <td>דימוי גוף</td>
+                        <td>180</td>
+                        <td class="stat-value">3.22</td>
+                        <td>0.95</td>
+                        <td>1.67</td>
+                        <td>5.08</td>
+                    </tr>
+                    <tr>
+                        <td>דיכאון</td>
+                        <td>180</td>
+                        <td class="stat-value">2.24</td>
+                        <td>0.61</td>
+                        <td>1.12</td>
+                        <td>3.62</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Correlation Analysis -->
+        <div class="section">
+            <h2>ניתוח קורלציות (השערות 1-2)</h2>
+
+            <div class="chart-container">
+                <div>                            <div id="corr-chart" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("corr-chart")) {                    Plotly.newPlot(                        "corr-chart",                        [{"colorscale":[[0.0,"rgb(5,48,97)"],[0.1,"rgb(33,102,172)"],[0.2,"rgb(67,147,195)"],[0.3,"rgb(146,197,222)"],[0.4,"rgb(209,229,240)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(253,219,199)"],[0.7,"rgb(244,165,130)"],[0.8,"rgb(214,96,77)"],[0.9,"rgb(178,24,43)"],[1.0,"rgb(103,0,31)"]],"hovertemplate":"%{x} ↔ %{y}\u003cbr\u003er = %{z:.3f}\u003cextra\u003e\u003c\u002fextra\u003e","text":[[1.0,-0.319,0.344],[-0.319,1.0,-0.335],[0.344,-0.335,1.0]],"textfont":{"size":14},"texttemplate":"%{text}","x":["שימוש ברשתות","דימוי גוף","דיכאון"],"y":["שימוש ברשתות","דימוי גוף","דיכאון"],"z":[[1.0,-0.3194767043224382,0.3438311269413992],[-0.3194767043224382,1.0,-0.33476560905937686],[0.3438311269413992,-0.33476560905937686,1.0]],"zmid":0,"type":"heatmap"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"font":{"size":18},"text":"מטריצת קורלציות"},"font":{"family":"Rubik, sans-serif"},"height":400,"paper_bgcolor":"rgba(0,0,0,0)","plot_bgcolor":"rgba(0,0,0,0)"},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>קשר</th>
+                        <th>r</th>
+                        <th>p</th>
+                        <th>פרשנות</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="significant">
+                        <td>רשתות ↔ דימוי גוף</td>
+                        <td class="stat-value">-0.319</td>
+                        <td>&lt; .001</td>
+                        <td><span class="badge badge-success">קשר שלילי בינוני</span></td>
+                    </tr>
+                    <tr class="significant">
+                        <td>רשתות ↔ דיכאון</td>
+                        <td class="stat-value">0.344</td>
+                        <td>&lt; .001</td>
+                        <td><span class="badge badge-success">קשר חיובי בינוני</span></td>
+                    </tr>
+                    <tr class="significant">
+                        <td>דימוי גוף ↔ דיכאון</td>
+                        <td class="stat-value">-0.335</td>
+                        <td>&lt; .001</td>
+                        <td><span class="badge badge-success">קשר שלילי בינוני</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="chart-container">
+                <div>                            <div id="scatter-sm-dep" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("scatter-sm-dep")) {                    Plotly.newPlot(                        "scatter-sm-dep",                        [{"marker":{"color":"#6366F1","opacity":0.6,"size":8},"mode":"markers","name":"נבדקים","x":[3.5,2.7,3.2,4.4,4.0,4.3,2.6,2.1,3.2,3.3,4.5,4.4,4.3,3.0,1.9,4.4,3.8,3.4,3.5,2.3,1.6,4.1,2.2,3.3,3.3,2.1,1.7,1.7,3.7,1.9,2.1,2.4,3.0,3.1,1.9,4.2,4.0,2.4,2.9,4.3,2.1,3.2,1.9,2.4,3.4,3.9,3.9,3.5,3.5,4.1,2.0,4.6,2.0,2.8,4.5,4.5,3.2,4.1,2.4,3.6,2.8,3.6,3.9,2.0,3.7,2.1,4.4,4.3,4.3,3.2,2.9,4.7,4.4,3.6,4.0,3.0,3.4,3.2,4.5,2.6,3.5,4.0,2.4,4.4,3.0,1.7,4.0,1.7,3.1,4.1,2.1,1.8,1.9,2.8,2.1,4.2,4.2,1.9,3.7,2.7,1.9,1.8,4.1,4.2,3.2,2.6,4.0,3.4,3.2,2.9,2.6,2.1,4.6,3.8,2.1,4.2,3.1,2.8,2.4,3.7,4.3,3.1,4.1,3.3,3.6,3.1,3.4,4.7,3.7,4.3,4.2,4.3,3.3,4.0,3.3,4.5,3.0,1.6,2.3,3.2,2.7,4.7,3.9,3.2,4.3,1.6,4.0,1.8,4.7,3.3,3.4,2.4,4.1,3.6,2.2,2.0,2.0,3.6,2.3,2.9,3.2,2.6,2.9,3.0,4.7,3.2,3.6,3.1,2.6,4.0,2.3,2.1,3.3,3.0,4.2,3.1,3.1,4.6,2.0,4.5],"y":[1.38,2.88,1.75,2.62,2.62,2.25,1.62,1.5,2.12,1.62,2.62,3.12,1.62,2.0,2.0,2.25,3.12,1.88,1.38,2.88,1.38,3.0,1.5,3.12,1.62,1.5,1.38,1.5,1.62,1.62,2.62,3.12,2.62,3.38,1.75,2.12,1.88,2.12,2.62,2.5,2.5,3.12,1.38,1.5,1.62,2.12,2.62,2.5,2.62,2.62,1.25,1.62,1.88,1.5,2.12,1.62,2.5,2.88,2.62,1.75,1.5,2.62,2.0,1.75,1.75,2.75,3.25,2.5,3.0,1.75,2.25,2.5,2.75,1.62,2.12,1.75,2.75,3.12,1.38,2.12,2.0,2.62,1.38,3.0,1.75,2.25,2.88,1.88,2.75,2.38,1.25,1.5,3.0,1.62,1.62,3.25,3.0,1.88,3.62,2.88,1.5,2.88,3.0,1.62,2.0,2.25,2.0,3.38,2.62,1.75,2.25,2.5,3.25,2.62,1.62,3.12,1.62,1.62,1.5,2.5,3.12,2.0,2.75,2.5,1.5,2.25,2.12,2.0,1.38,1.75,2.12,3.25,2.5,2.25,1.25,2.38,1.12,2.62,2.75,3.12,1.12,2.38,3.12,3.25,2.0,1.25,2.5,1.5,2.38,1.75,2.75,2.25,3.0,2.0,1.75,2.0,3.0,2.88,2.62,2.5,2.88,2.62,2.62,1.75,3.38,2.75,1.62,2.12,2.62,2.0,2.38,1.5,2.25,2.62,2.62,1.38,1.38,3.12,2.12,2.88],"type":"scatter"},{"line":{"color":"#EF4444","dash":"dash","width":2},"mode":"lines","name":"קו רגרסיה (r=0.34)","x":[1.6,4.7],"y":[1.8550389198280097,2.585890221651039],"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"font":{"size":18},"text":"קשר בין שימוש ברשתות לדיכאון"},"font":{"family":"Rubik, sans-serif"},"legend":{"orientation":"h","yanchor":"bottom","y":1.02,"xanchor":"right","x":1},"xaxis":{"title":{"text":"שימוש ברשתות"}},"yaxis":{"title":{"text":"דיכאון"}},"height":400,"paper_bgcolor":"rgba(0,0,0,0)","plot_bgcolor":"rgba(0,0,0,0)"},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+
+            <div class="interpretation">
+                <h3>פרשנות:</h3>
+                <ul>
+                    <li><strong>השערה 1 נתמכה:</strong> נמצא קשר שלילי מובהק (r = -0.32) - ככל שהשימוש ברשתות גבוה יותר, דימוי הגוף נמוך יותר.</li>
+                    <li><strong>השערה 2 נתמכה:</strong> נמצא קשר חיובי מובהק (r = 0.34) - ככל שהשימוש ברשתות גבוה יותר, רמת הדיכאון גבוהה יותר.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Gender Comparison -->
+        <div class="section">
+            <h2>השוואה לפי מגדר (השערה 3)</h2>
+
+            <div class="chart-container">
+                <div>                            <div id="gender-chart" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("gender-chart")) {                    Plotly.newPlot(                        "gender-chart",                        [{"error_y":{"array":[0.19314079677709897],"type":"data"},"marker":{"color":"#3B82F6"},"name":"בן","text":["3.45"],"textposition":"outside","x":["בן"],"y":[3.451348314606742],"type":"bar"},{"error_y":{"array":[0.18966001153037376],"type":"data"},"marker":{"color":"#EC4899"},"name":"בת","text":["2.99"],"textposition":"outside","x":["בת"],"y":[2.994945054945055],"type":"bar"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"font":{"size":18},"text":"דימוי גוף לפי מגדר"},"font":{"family":"Rubik, sans-serif"},"yaxis":{"title":{"text":"ממוצע דימוי גוף"}},"showlegend":false,"height":400,"paper_bgcolor":"rgba(0,0,0,0)","plot_bgcolor":"rgba(0,0,0,0)"},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>קבוצה</th>
+                        <th>N</th>
+                        <th>ממוצע</th>
+                        <th>סטיית תקן</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>בנים</td>
+                        <td>89</td>
+                        <td class="stat-value">3.45</td>
+                        <td>0.93</td>
+                    </tr>
+                    <tr>
+                        <td>בנות</td>
+                        <td>91</td>
+                        <td class="stat-value">2.99</td>
+                        <td>0.92</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="margin-top: 1rem; text-align: center; color: #64748b;">
+                <strong>t</strong>(178) = 3.30, <strong>p</strong> = 0.001, <strong>d</strong> = 0.49
+            </p>
+
+            <div class="interpretation">
+                <h3>פרשנות:</h3>
+                <p><strong>השערה 3 נתמכה:</strong> נמצא הבדל מובהק בדימוי גוף בין בנים לבנות. בנות דיווחו על דימוי גוף נמוך יותר (M = 2.99) בהשוואה לבנים (M = 3.45). גודל האפקט בינוני (d = 0.49).</p>
+            </div>
+        </div>
+
+        <!-- Sector Comparison -->
+        <div class="section">
+            <h2>השוואה לפי מגזר (השערה 5)</h2>
+
+            <div class="chart-container">
+                <div>                            <div id="sector-chart" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("sector-chart")) {                    Plotly.newPlot(                        "sector-chart",                        [{"error_y":{"array":[0.15661773287731473],"type":"data"},"marker":{"color":"#3B82F6"},"name":"ממלכתי","text":["3.55"],"textposition":"outside","x":["ממלכתי"],"y":[3.5511111111111116],"type":"bar"},{"error_y":{"array":[0.2598719807905423],"type":"data"},"marker":{"color":"#8B5CF6"},"name":"ממ\"ד","text":["3.10"],"textposition":"outside","x":["ממ\"ד"],"y":[3.0980000000000003],"type":"bar"},{"error_y":{"array":[0.24272158525503645],"type":"data"},"marker":{"color":"#06B6D4"},"name":"חרדי","text":["2.69"],"textposition":"outside","x":["חרדי"],"y":[2.6875],"type":"bar"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"font":{"size":18},"text":"שימוש ברשתות חברתיות לפי סוג בית ספר"},"font":{"family":"Rubik, sans-serif"},"yaxis":{"title":{"text":"ממוצע שימוש ברשתות"}},"showlegend":false,"height":400,"paper_bgcolor":"rgba(0,0,0,0)","plot_bgcolor":"rgba(0,0,0,0)"},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>סוג בית ספר</th>
+                        <th>N</th>
+                        <th>ממוצע שימוש ברשתות</th>
+                        <th>סטיית תקן</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ממלכתי</td>
+                        <td>90</td>
+                        <td class="stat-value">3.55</td>
+                        <td>0.76</td>
+                    </tr>
+                    <tr>
+                        <td>ממ"ד</td>
+                        <td>50</td>
+                        <td class="stat-value">3.10</td>
+                        <td>0.94</td>
+                    </tr>
+                    <tr>
+                        <td>חרדי</td>
+                        <td>40</td>
+                        <td class="stat-value">2.69</td>
+                        <td>0.78</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="margin-top: 1rem; text-align: center; color: #64748b;">
+                <strong>F</strong>(2, 177) = 16.42, <strong>p</strong> < .001, <strong>η²</strong> = 0.157
+            </p>
+
+            <div class="interpretation">
+                <h3>פרשנות:</h3>
+                <p><strong>השערה 5 נתמכה:</strong> נמצאו הבדלים מובהקים בשימוש ברשתות חברתיות בין סוגי בתי הספר. תלמידים בבתי ספר ממלכתיים מדווחים על השימוש הגבוה ביותר, ואילו תלמידים במוסדות חרדיים מדווחים על השימוש הנמוך ביותר. גודל האפקט גדול (η² = 0.16).</p>
+            </div>
+        </div>
+
+        <!-- Mediation Analysis -->
+        <div class="section">
+            <h2>ניתוח תיווך (השערה 4)</h2>
+
+            <div class="chart-container">
+                <div>                            <div id="mediation-chart" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("mediation-chart")) {                    Plotly.newPlot(                        "mediation-chart",                        [],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"shapes":[{"fillcolor":"#3B82F6","line":{"color":"#3B82F6","width":2},"opacity":0.8,"type":"rect","x0":-0.01999999999999999,"x1":0.22,"y0":0.38,"y1":0.62},{"fillcolor":"#8B5CF6","line":{"color":"#8B5CF6","width":2},"opacity":0.8,"type":"rect","x0":0.38,"x1":0.62,"y0":0.73,"y1":0.97},{"fillcolor":"#EF4444","line":{"color":"#EF4444","width":2},"opacity":0.8,"type":"rect","x0":0.78,"x1":1.02,"y0":0.38,"y1":0.62}],"annotations":[{"font":{"color":"white","family":"Rubik","size":12},"showarrow":false,"text":"שימוש ברשתות\u003cbr\u003eחברתיות","x":0.1,"y":0.5},{"font":{"color":"white","family":"Rubik","size":12},"showarrow":false,"text":"דימוי גוף","x":0.5,"y":0.85},{"font":{"color":"white","family":"Rubik","size":12},"showarrow":false,"text":"דיכאון","x":0.9,"y":0.5},{"arrowcolor":"#374151","arrowhead":2,"arrowsize":1.5,"arrowwidth":2,"ax":0.22,"axref":"x","ay":0.55,"ayref":"y","showarrow":true,"x":0.38,"xref":"x","y":0.75,"yref":"y"},{"bgcolor":"white","borderpad":2,"font":{"color":"#374151","family":"Rubik","size":11},"showarrow":false,"text":"a = -0.40***","x":0.25,"y":0.7},{"arrowcolor":"#374151","arrowhead":2,"arrowsize":1.5,"arrowwidth":2,"ax":0.62,"axref":"x","ay":0.75,"ayref":"y","showarrow":true,"x":0.78,"xref":"x","y":0.55,"yref":"y"},{"bgcolor":"white","borderpad":2,"font":{"color":"#374151","family":"Rubik","size":11},"showarrow":false,"text":"b = -0.35***","x":0.75,"y":0.7},{"arrowcolor":"#374151","arrowhead":2,"arrowsize":1.5,"arrowwidth":2,"ax":0.22,"axref":"x","ay":0.5,"ayref":"y","showarrow":true,"x":0.78,"xref":"x","y":0.5,"yref":"y"},{"bgcolor":"white","borderpad":2,"font":{"color":"#374151","family":"Rubik","size":11},"showarrow":false,"text":"c' = 0.20*","x":0.5,"y":0.35}],"title":{"font":{"size":18},"text":"מודל תיווך: דימוי גוף כמתווך"},"xaxis":{"showgrid":false,"zeroline":false,"showticklabels":false,"range":[0,1]},"yaxis":{"showgrid":false,"zeroline":false,"showticklabels":false,"range":[0,1]},"font":{"family":"Rubik, sans-serif"},"height":400,"paper_bgcolor":"rgba(0,0,0,0)","plot_bgcolor":"rgba(0,0,0,0)"},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>נתיב</th>
+                        <th>מקדם</th>
+                        <th>שגיאת תקן</th>
+                        <th>p</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="significant">
+                        <td>a (רשתות → דימוי גוף)</td>
+                        <td class="stat-value">-0.40</td>
+                        <td>0.07</td>
+                        <td>&lt; .001</td>
+                    </tr>
+                    <tr class="significant">
+                        <td>b (דימוי גוף → דיכאון)</td>
+                        <td class="stat-value">-0.35</td>
+                        <td>0.06</td>
+                        <td>&lt; .001</td>
+                    </tr>
+                    <tr>
+                        <td>c (אפקט ישיר מקורי)</td>
+                        <td class="stat-value">0.34</td>
+                        <td>0.07</td>
+                        <td>&lt; .001</td>
+                    </tr>
+                    <tr>
+                        <td>c' (אפקט ישיר לאחר תיווך)</td>
+                        <td class="stat-value">0.20</td>
+                        <td>0.08</td>
+                        <td>.012</td>
+                    </tr>
+                    <tr class="significant">
+                        <td>אפקט עקיף (a × b)</td>
+                        <td class="stat-value">0.14</td>
+                        <td>0.04</td>
+                        <td>&lt; .001</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="interpretation">
+                <h3>פרשנות:</h3>
+                <p><strong>השערה 4 נתמכה:</strong> נמצא תיווך חלקי מובהק. דימוי גוף מתווך חלקית את הקשר בין שימוש ברשתות חברתיות לדיכאון. האפקט העקיף מובהק (ab = 0.14, p < .001), בעוד שהאפקט הישיר נשאר מובהק אך קטן יותר לאחר הכנסת המתווך.</p>
+            </div>
+        </div>
+
+        <!-- Conclusions -->
+        <div class="section">
+            <h2>מסקנות והמלצות</h2>
+
+            <div class="interpretation" style="border-right-color: #10b981; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+                <h3 style="color: #166534;">ממצאים עיקריים:</h3>
+                <ul style="color: #166534;">
+                    <li>שימוש מוגבר ברשתות חברתיות קשור לדימוי גוף שלילי יותר ולרמות דיכאון גבוהות יותר</li>
+                    <li>בנות פגיעות יותר מבחינת דימוי גוף בהשוואה לבנים</li>
+                    <li>דימוי גוף מתווך חלקית את הקשר בין רשתות חברתיות לדיכאון</li>
+                    <li>הבדלים משמעותיים בשימוש ברשתות בין מגזרים שונים</li>
+                </ul>
+            </div>
+
+            <div class="interpretation" style="margin-top: 1rem; border-right-color: #f59e0b; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+                <h3 style="color: #92400e;">המלצות יישומיות:</h3>
+                <ul style="color: #92400e;">
+                    <li>פיתוח תוכניות התערבות ממוקדות לקידום דימוי גוף חיובי בקרב מתבגרים</li>
+                    <li>הדרכת מורים והורים לזיהוי סימני מצוקה הקשורים לשימוש ברשתות</li>
+                    <li>התאמת תוכניות מניעה לאוכלוסיות שונות בהתאם לממצאי המחקר</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>דוח זה נוצר באמצעות <a href="https://statviz.xyz">StatViz</a></p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem;">© 2024 StatViz - פלטפורמה לניתוח נתונים סטטיסטיים</p>
+        </div>
+    </div>
+</body>
+</html>

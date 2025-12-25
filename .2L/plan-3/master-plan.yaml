@@ -1,0 +1,268 @@
+# Master Plan: StatViz Demo
+# Generated: 2025-12-25
+# Plan ID: plan-3
+
+plan_id: plan-3
+status: PLANNED
+complexity: MEDIUM
+total_iterations: 1
+
+# Vision Summary
+vision_summary: |
+  Create a compelling demo page showcasing StatViz's transformation power through
+  a "pain to solution" narrative. Includes fake research dataset (N=180, social media
+  → body image → depression), interactive HTML report, DOCX document, and public
+  demo viewer without password protection.
+
+# Iteration Breakdown
+iterations:
+  - iteration_id: iteration-1
+    name: "Complete Demo Implementation"
+    description: |
+      Build all demo components in a single iteration:
+      - Generate fake research dataset with baked-in correlations
+      - Create interactive HTML report matching production quality
+      - Generate DOCX academic report
+      - Build demo page with pain→solution narrative flow
+      - Add public report viewer (no auth)
+      - Update landing page with demo CTA
+
+    status: PENDING
+
+    # Builder assignments - parallel execution where possible
+    builders:
+      - builder_id: builder-1
+        name: "Data & Reports Generator"
+        focus: "Fake dataset generation and report creation"
+        tasks:
+          - task_id: task-1-1
+            name: "Generate fake research dataset"
+            description: |
+              Create 180-row dataset with:
+              - Social media use scale (10 items, 1-5)
+              - Body image scale (12 items, 1-6)
+              - Depression scale (8 items, 1-4)
+              - Demographics: gender (בן/בת), age (14-18), school type
+              - Use Cholesky decomposition for correlated data
+              - Bake in significant results for all 5 hypotheses
+            output: "public/demo/demo-dataset.xlsx"
+            priority: CRITICAL
+
+          - task_id: task-1-2
+            name: "Run statistical analysis"
+            description: |
+              Execute full analysis pipeline:
+              - Cronbach's alpha for all 3 scales
+              - Descriptive statistics
+              - Correlation matrix
+              - Independent t-tests (gender differences)
+              - One-way ANOVA (sector differences)
+              - Mediation analysis (Baron & Kenny)
+              - Multiple regression
+            depends_on: [task-1-1]
+            priority: CRITICAL
+
+          - task-id: task-1-3
+            name: "Generate HTML report"
+            description: |
+              Create interactive HTML report with:
+              - Executive summary with hypothesis cards
+              - Demographics visualizations
+              - Reliability section (Cronbach's alpha)
+              - Hypothesis sections with Plotly charts
+              - Correlation heatmap
+              - Mediation path diagram
+              - Summary table
+              - Purple/blue gradient theme
+              - Hebrew RTL, mobile responsive
+            output: "Supabase: projects/demo/report.html"
+            depends_on: [task-1-2]
+            priority: CRITICAL
+
+          - task_id: task-1-4
+            name: "Generate DOCX report"
+            description: |
+              Create academic Word document with:
+              - Title page with research topic
+              - All sections in academic Hebrew
+              - Embedded graphs (PNG exports)
+              - APA-style statistical reporting
+              - Proper RTL formatting
+            output: "Supabase: projects/demo/findings.docx"
+            depends_on: [task-1-2]
+            priority: HIGH
+
+      - builder_id: builder-2
+        name: "Pain Assets Creator"
+        focus: "SPSS/Word screenshots for contrast"
+        tasks:
+          - task_id: task-2-1
+            name: "Create SPSS correlation screenshot"
+            description: |
+              Generate realistic SPSS correlation output:
+              - Raw table format, gray clinical look
+              - Hebrew variable names
+              - No visualization, numbers-only
+            output: "public/demo/spss-correlation.webp"
+            priority: HIGH
+
+          - task_id: task-2-2
+            name: "Create SPSS regression screenshot"
+            description: |
+              Generate SPSS regression output:
+              - Intimidating, dense statistics
+              - Multiple tables
+              - No graphs
+            output: "public/demo/spss-regression.webp"
+            priority: HIGH
+
+          - task_id: task-2-3
+            name: "Create messy Word doc screenshot"
+            description: |
+              Show typical student output:
+              - Copy-pasted SPSS tables
+              - Poor formatting
+              - No visualization
+              - Cramped layout
+            output: "public/demo/messy-word-doc.webp"
+            priority: HIGH
+
+      - builder_id: builder-3
+        name: "Demo Page Builder"
+        focus: "Demo page UI and components"
+        tasks:
+          - task_id: task-3-1
+            name: "Create demo page structure"
+            description: |
+              Build /demo route with sections:
+              1. Hero header
+              2. Pain section (ugly outputs)
+              3. Input preview section
+              4. Black box animation
+              5. Solution showcase (HTML report)
+              6. CTA section
+            output: "app/demo/page.tsx"
+            priority: CRITICAL
+
+          - task_id: task-3-2
+            name: "Create PainSection component"
+            description: |
+              Display SPSS screenshots with:
+              - Gray/clinical design theme
+              - 3-column grid (responsive)
+              - Lightbox on click
+              - Desaturated palette
+            output: "components/demo/PainSection.tsx"
+            priority: HIGH
+
+          - task_id: task-3-3
+            name: "Create BlackBoxAnimation component"
+            description: |
+              Processing visualization:
+              - Gradient wave or particles
+              - "מעובד באמצעות מערכת הניתוח הסטטיסטי שלנו"
+              - CSS-only animation (no libraries)
+            output: "components/demo/BlackBoxAnimation.tsx"
+            priority: MEDIUM
+
+          - task_id: task-3-4
+            name: "Create SolutionShowcase component"
+            description: |
+              Beautiful output display:
+              - Reuse HtmlIframe component
+              - Luxury shadow and frame
+              - Full-width, scrollable
+              - Open fullscreen option
+            output: "components/demo/SolutionShowcase.tsx"
+            priority: HIGH
+
+          - task_id: task-3-5
+            name: "Create DemoCTA component"
+            description: |
+              Call-to-action section:
+              - WhatsApp link (Israeli B2B preference)
+              - Gradient background
+              - Clear action button
+            output: "components/demo/DemoCTA.tsx"
+            priority: HIGH
+
+      - builder_id: builder-4
+        name: "Integration Builder"
+        focus: "API routes and landing page updates"
+        tasks:
+          - task_id: task-4-1
+            name: "Create demo API routes"
+            description: |
+              Public API routes for demo:
+              - /api/demo/html - serve HTML without auth
+              - /api/demo/download - serve DOCX without auth
+              OR modify existing routes to bypass auth for id='demo'
+            output: "app/api/demo/*/route.ts"
+            priority: HIGH
+            depends_on: [task-1-3, task-1-4]
+
+          - task_id: task-4-2
+            name: "Update landing page"
+            description: |
+              Add demo CTA to homepage:
+              - "צפה בדוגמה" button in hero section
+              - Link to /demo
+              - Keep existing admin functionality
+            output: "app/page.tsx"
+            priority: MEDIUM
+
+          - task_id: task-4-3
+            name: "Update middleware CSP"
+            description: |
+              Extend CSP rules for demo routes:
+              - Allow Plotly CDN
+              - Match existing preview route rules
+            output: "middleware.ts"
+            priority: HIGH
+            depends_on: [task-4-1]
+
+    # Dependencies between builders
+    builder_dependencies:
+      - builder-3 can start immediately (UI structure)
+      - builder-2 can start immediately (screenshots)
+      - builder-1 generates data first, then reports
+      - builder-4 integrates after reports exist
+
+    # Validation criteria
+    validation:
+      - Demo page loads at /demo
+      - All 6 sections render correctly
+      - Pain screenshots display in gallery
+      - Black box animation plays
+      - HTML report loads in iframe
+      - DOCX downloads successfully
+      - CTA links to WhatsApp
+      - Mobile responsive (test 375px width)
+      - Hebrew RTL renders correctly
+      - Landing page CTA links to demo
+
+# Technical notes
+technical_notes:
+  - Use existing HtmlIframe component for report display
+  - Use existing Button gradient variant for CTAs
+  - Demo files stored at projects/demo/ in Supabase Storage
+  - No database changes required
+  - Demo bypasses auth by checking id === 'demo'
+  - WhatsApp CTA format: https://wa.me/972XXXXXXXXX?text=...
+
+# Risk mitigation
+risks:
+  - risk: "Demo data quality"
+    mitigation: "Use Cholesky decomposition for realistic correlations"
+  - risk: "SPSS screenshot authenticity"
+    mitigation: "Reference real SPSS interface, use authentic styling"
+  - risk: "Report generation complexity"
+    mitigation: "Follow existing report.html template exactly"
+
+# Success criteria
+success_criteria:
+  - Immediate "wow" reaction when viewing solution vs pain
+  - Hebrew renders perfectly (RTL, no glitches)
+  - Mobile works on 375px screens
+  - Clear CTA to contact
+  - Professional appearance matching StatViz brand
